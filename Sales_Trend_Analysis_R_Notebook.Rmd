@@ -1,0 +1,71 @@
+---
+title: "Sales Trend Analysis Using R"
+output: html_notebook
+---
+
+```{r}
+library(readr)
+library(ggplot2)
+library(dplyr)
+```
+```{r}
+sales_data <- read_csv("Superstore_Sales.csv")
+head(sales_data)
+```
+```{r}
+colnames(sales_data)
+```
+```{r}
+sales_data$Order_Date <- as.Date(sales_data$`Order Date`, format = "%d/%m/%Y")
+head(sales_data$Order_Date)
+```
+
+```{r}
+library(ggplot2)
+ggplot(sales_data, aes(x = Order_Date, y = Sales)) +
+    geom_line()
+```
+
+```{r}
+ggplot(sales_data, aes(x = Order_Date, y = Sales)) +
+   geom_line() +
+   labs(title = "Sales Trend Over Time",
+       x = "Order Date",
+       y = "Sales Amount")
+```
+
+```{r}
+library(dplyr)
+ monthly_sales <- sales_data %>%
+    mutate(month = format(Order_Date, "%Y-%m")) %>%
+    group_by(month) %>%
+    summarise(total_sales = sum(Sales, na.rm = TRUE))
+```
+
+```{r}
+ggplot(monthly_sales, aes(x = month, y = total_sales, group = 1)) +
+   geom_line() +
+   labs(title = "Monthly Sales Trend",
+       x = "Month",
+       y = "Total Sales")
+```
+
+```{r}
+summary(sales_data$Sales)
+```
+
+```{r}
+ggplot(sales_data, aes(x = Order_Date, y = Sales)) +
+   geom_line(color = "blue") +
+   labs(title = "Superstore Sales Trend",
+        x = "Date",
+        y = "Sales Amount")
+```
+
+```{r}
+max(sales_data$Sales)
+```
+
+```{r}
+sales_data[sales_data$Sales == max(sales_data$Sales), ]
+```
